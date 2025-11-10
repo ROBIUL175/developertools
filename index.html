@@ -14,14 +14,23 @@
       position: relative;
       overflow-x: hidden;
       min-height: 100vh;
-      /* Prevent elastic scrolling on mobile */
       overscroll-behavior: none;
-      /* Improve text rendering */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
     }
-    
+
+    /* FIREWORKS CANVAS - sits behind UI but above rgb background */
+    #fireworksCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* above rgb-bg (-2) but below UI (default 0/1) */
+      pointer-events: none; /* make UI clickable — script will enable pointer events when needed */
+    }
+
     /* Particle Background - Reduced for mobile */
     #particles-js {
       position: fixed;
@@ -29,11 +38,10 @@
       height: 100%;
       top: 0;
       left: 0;
-      z-index: -2;
-      /* Reduce GPU usage */
+      z-index: -3; /* behind fireworks */
       will-change: transform;
     }
-    
+
     /* Advanced RGB Background Effects - Optimized for mobile */
     .rgb-bg {
       position: fixed;
@@ -41,32 +49,30 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
+      z-index: -2; /* behind fireworks but above particles */
       overflow: hidden;
-      /* Reduce animation strain */
       will-change: transform;
     }
-    
+
     .rgb-circle {
       position: absolute;
       border-radius: 50%;
-      filter: blur(40px); /* Reduced blur for mobile */
-      opacity: 0.15; /* Reduced opacity for better performance */
-      animation: float-mobile 30s infinite ease-in-out; /* Slower animation */
-      /* Optimize for mobile */
+      filter: blur(40px);
+      opacity: 0.15;
+      animation: float-mobile 30s infinite ease-in-out;
       will-change: transform;
     }
-    
+
     .circle-1 {
-      width: 200px; /* Smaller for mobile */
+      width: 200px;
       height: 200px;
       background: #ff0055;
       top: 10%;
       left: 10%;
       animation-delay: 0s;
-      box-shadow: 0 0 50px 25px rgba(255, 0, 85, 0.2); /* Reduced shadow */
+      box-shadow: 0 0 50px 25px rgba(255, 0, 85, 0.2);
     }
-    
+
     .circle-2 {
       width: 250px;
       height: 250px;
@@ -77,7 +83,7 @@
       animation-duration: 35s;
       box-shadow: 0 0 60px 30px rgba(0, 170, 255, 0.2);
     }
-    
+
     .circle-3 {
       width: 225px;
       height: 225px;
@@ -88,7 +94,7 @@
       animation-duration: 40s;
       box-shadow: 0 0 55px 28px rgba(0, 255, 136, 0.2);
     }
-    
+
     .circle-4 {
       width: 175px;
       height: 175px;
@@ -99,47 +105,22 @@
       animation-duration: 33s;
       box-shadow: 0 0 45px 23px rgba(255, 170, 0, 0.2);
     }
-    
-    /* Reduced animation for mobile */
+
     @keyframes float-mobile {
-      0%, 100% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-      }
-      25% {
-        transform: translate(40px, 30px) scale(1.05) rotate(45deg);
-      }
-      50% {
-        transform: translate(0, 60px) scale(0.95) rotate(90deg);
-      }
-      75% {
-        transform: translate(-40px, 30px) scale(1.02) rotate(135deg);
-      }
+      0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+      25% { transform: translate(40px, 30px) scale(1.05) rotate(45deg); }
+      50% { transform: translate(0, 60px) scale(0.95) rotate(90deg); }
+      75% { transform: translate(-40px, 30px) scale(1.02) rotate(135deg); }
     }
-    
-    /* Respect reduced motion preference */
+
     @media (prefers-reduced-motion: reduce) {
-      .rgb-circle {
-        animation: none;
-      }
-      
-      .glowing-title {
-        animation: none;
-      }
-      
-      .glowing-title::after {
-        animation: none;
-      }
-      
-      button::before, .help-btn::before, .convert-btn::before, .copy-btn::before {
-        animation: none;
-      }
-      
-      .tabs::before, .hex-converter-card::before, .enhanced-card::before {
-        animation: none;
-      }
+      .rgb-circle { animation: none; }
+      .glowing-title { animation: none; }
+      .glowing-title::after { animation: none; }
+      button::before, .help-btn::before, .convert-btn::before, .copy-btn::before { animation: none; }
+      .tabs::before, .hex-converter-card::before, .enhanced-card::before { animation: none; }
     }
-    
-    /* Advanced RGB Glowing Text Effect - Optimized */
+
     .glowing-title {
       font-weight: 800;
       background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055);
@@ -147,126 +128,107 @@
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: rgb-shift 6s ease infinite; /* Slower animation */
-      text-shadow: 0 0 10px rgba(255, 0, 85, 0.3); /* Reduced shadow */
+      animation: rgb-shift 6s ease infinite;
+      text-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
       position: relative;
       display: inline-block;
       font-size: clamp(1.5rem, 4vw, 2rem);
-      /* Optimize for mobile */
       will-change: background-position;
     }
-    
+
     .glowing-title::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055);
       background-size: 300% 300%;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: rgb-shift 6s ease infinite reverse;
-      opacity: 0.3; /* Reduced opacity */
-      filter: blur(3px); /* Reduced blur */
+      opacity: 0.3;
+      filter: blur(3px);
       z-index: -1;
     }
-    
+
     @keyframes rgb-shift {
-      0%, 100% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
-    
-    /* Advanced Navigation Tabs - Mobile Optimized */
+
     .tabs {
       display: flex;
       background: rgba(7, 16, 39, 0.95);
-      padding: 0 5px; /* Reduced padding */
+      padding: 0 5px;
       border-bottom: 1px solid #23313f;
       position: relative;
-      backdrop-filter: blur(10px); /* Reduced blur */
+      backdrop-filter: blur(10px);
       z-index: 10;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3); /* Reduced shadow */
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
       flex-wrap: wrap;
-      /* Prevent layout shifts */
       contain: layout style paint;
     }
-    
+
     .tabs::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 2px;
       background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff);
       background-size: 300% 100%;
-      animation: rgb-shift 8s ease infinite; /* Slower animation */
+      animation: rgb-shift 8s ease infinite;
     }
-    
+
     .tab {
-      padding: 10px 12px; /* Reduced padding */
+      padding: 10px 12px;
       background: transparent;
       border: none;
       color: #9fb0c8;
       cursor: pointer;
       font-size: clamp(0.8rem, 3vw, 0.9rem);
       border-bottom: 3px solid transparent;
-      transition: all 0.3s ease; /* Faster transition */
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
       font-weight: 600;
       flex: 1;
-      min-width: 100px; /* Smaller min-width */
+      min-width: 100px;
       text-align: center;
-      /* Improve touch targets */
       min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    
+
     .tab::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
+      top: 0; left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-      transition: left 0.5s; /* Faster transition */
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.5s;
     }
-    
-    .tab:hover::before,
-    .tab:active::before {
-      left: 100%;
-    }
-    
+
+    .tab:hover::before, .tab:active::before { left: 100%; }
+
     .tab.active {
       color: #fff;
       border-bottom-color: #1f6feb;
       background: linear-gradient(to bottom, rgba(31, 111, 235, 0.15), transparent);
-      text-shadow: 0 0 8px rgba(31, 111, 235, 0.5); /* Reduced shadow */
+      text-shadow: 0 0 8px rgba(31, 111, 235, 0.5);
     }
-    
-    .tab:hover,
-    .tab:active {
+
+    .tab:hover, .tab:active {
       color: #e6eef8;
       background: rgba(31, 111, 235, 0.08);
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.4); /* Reduced shadow */
+      text-shadow: 0 0 6px rgba(255,255,255,0.4);
     }
-    
-    /* Advanced How to use button - Mobile Optimized */
+
     .help-btn {
       position: relative;
       margin: 8px auto;
-      padding: 12px 16px; /* Increased padding for better touch */
+      padding: 12px 16px;
       background: linear-gradient(135deg, #1f6feb, #0d5fd9);
       border: none;
       border-radius: 8px;
@@ -274,212 +236,155 @@
       cursor: pointer;
       font-size: clamp(0.8rem, 3vw, 0.9rem);
       font-weight: 600;
-      transition: all 0.3s ease; /* Faster transition */
+      transition: all 0.3s ease;
       z-index: 1;
       overflow: hidden;
-      box-shadow: 0 2px 10px rgba(31, 111, 235, 0.2); /* Reduced shadow */
+      box-shadow: 0 2px 10px rgba(31, 111, 235, 0.2);
       display: block;
       width: fit-content;
-      /* Improve touch targets */
       min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    
+
     .help-btn::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: -100%;
+      top: 0; left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s; /* Faster transition */
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
     }
-    
-    .help-btn:hover::before,
-    .help-btn:active::before {
-      left: 100%;
-    }
-    
-    .help-btn:hover,
-    .help-btn:active {
+
+    .help-btn:hover::before, .help-btn:active::before { left: 100%; }
+
+    .help-btn:hover, .help-btn:active {
       background: linear-gradient(135deg, #0d5fd9, #1f6feb);
-      transform: scale(1.05); /* Reduced scale */
-      box-shadow: 0 4px 15px rgba(31, 111, 235, 0.4); /* Reduced shadow */
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(31, 111, 235, 0.4);
     }
-    
-    /* Tool Container */
+
     .tool-container {
       display: none;
-      padding: 12px; /* Reduced padding */
+      padding: 12px;
       position: relative;
       z-index: 1;
-      /* Prevent layout shifts */
       contain: layout style paint;
     }
-    
-    .tool-container.active {
-      display: block;
-      animation: fadeIn 0.4s ease; /* Faster animation */
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Byte Diff Viewer Styles - Mobile Optimized */
-    .wrap{
+
+    .tool-container.active { display: block; animation: fadeIn 0.4s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .wrap {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 12px; /* Reduced gap */
+      gap: 12px;
       margin-bottom: 12px;
     }
-    
-    @media (min-width: 768px) {
-      .wrap {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    
+
+    @media (min-width: 768px) { .wrap { grid-template-columns: 1fr 1fr; } }
+
     textarea{
       width:100%;
-      height:150px; /* Reduced height */
-      padding:10px; /* Reduced padding */
+      height:150px;
+      padding:10px;
       border-radius:8px;
       border:1px solid #23313f;
       background:#071027;
       color:inherit;
       font-family:monospace;
-      resize:vertical; 
-      transition: all 0.3s ease; /* Faster transition */
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+      resize:vertical;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       font-size: clamp(0.8rem, 3vw, 0.9rem);
-      /* Improve scrolling performance */
       -webkit-overflow-scrolling: touch;
-      /* Prevent textarea from causing layout shifts */
       contain: layout style;
     }
-    
+
     textarea:focus {
       border-color: #1f6feb;
       box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.2), 0 4px 12px rgba(31, 111, 235, 0.15);
-      transform: translateY(-1px); /* Reduced transform */
+      transform: translateY(-1px);
     }
-    
+
     .controls{
       display:flex;
       flex-wrap: wrap;
-      gap: 6px; /* Reduced gap */
-      align-items: center; 
+      gap: 6px;
+      align-items: center;
       margin-top: 12px;
     }
-    
-    /* Advanced RGB Button Effects - Mobile Optimized */
+
     button {
       background: #1f6feb;
       border: 0;
-      padding: 10px 12px; /* Increased padding for touch */
+      padding: 10px 12px;
       border-radius: 8px;
       color: white;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease; /* Faster transition */
+      transition: all 0.3s ease;
       z-index: 1;
       display: flex;
       align-items: center;
       gap: 6px;
       font-weight: 600;
-      box-shadow: 0 2px 8px rgba(31, 111, 235, 0.2); /* Reduced shadow */
+      box-shadow: 0 2px 8px rgba(31, 111, 235, 0.2);
       font-size: clamp(0.75rem, 2.5vw, 0.85rem);
       flex: 1;
       min-width: fit-content;
       justify-content: center;
-      /* Improve touch targets */
       min-height: 44px;
     }
-    
+
     button::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055);
       background-size: 400% 400%;
       z-index: -1;
       opacity: 0;
-      transition: opacity 0.3s; /* Faster transition */
+      transition: opacity 0.3s;
     }
-    
-    button:hover::before,
-    button:active::before {
+
+    button:hover::before, button:active::before {
       opacity: 1;
-      animation: rgb-flow 4s linear infinite; /* Slower animation */
+      animation: rgb-flow 4s linear infinite;
     }
-    
-    button:hover,
-    button:active {
-      transform: translateY(-2px); /* Reduced transform */
-      box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3); /* Reduced shadow */
-    }
-    
-    button:active {
-      transform: translateY(0);
-    }
-    
-    @keyframes rgb-flow {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 400% 50%; }
-    }
-    
-    button.ghost{
-      background:transparent;
-      border:2px solid #2b445c;
-      box-shadow: none;
-    }
-    
-    button.ghost:hover,
-    button.ghost:active {
-      border-color: #1f6feb;
-      box-shadow: 0 0 10px rgba(31, 111, 235, 0.4); /* Reduced shadow */
-      background: rgba(31, 111, 235, 0.1);
-    }
-    
-    .result{
-      margin-top:12px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-    .hex-line{
-      font-family:monospace;
-      white-space:pre-wrap;
-      word-break:break-all;
-      font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-    }
-    
+
+    button:hover, button:active { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(31, 111, 235, 0.3); }
+    button:active { transform: translateY(0); }
+
+    @keyframes rgb-flow { 0% { background-position: 0% 50%; } 100% { background-position: 400% 50%; } }
+
+    button.ghost{ background:transparent; border:2px solid #2b445c; box-shadow: none; }
+    button.ghost:hover, button.ghost:active { border-color: #1f6feb; box-shadow: 0 0 10px rgba(31, 111, 235, 0.4); background: rgba(31, 111, 235, 0.1); }
+
+    .result{ margin-top:12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .hex-line{ font-family:monospace; white-space:pre-wrap; word-break:break-all; font-size: clamp(0.75rem, 2.5vw, 0.85rem); }
     .same{background:transparent}
     .removed{background:#582020;color:#ffd6d6;padding:2px 4px;border-radius:4px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);}
     .added{background:#163a20;color:#c8ffd8;padding:2px 4px;border-radius:4px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);}
     .changed-old{background:#6b2b2b;color:#ffd8d8;padding:2px 4px;border-radius:3px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);}
     .changed-new{background:#1b5b2b;color:#cfffdf;padding:2px 4px;border-radius:3px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);}
-    
+
     table{
       width:100%;
       border-collapse:collapse;
-      margin-top:12px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15); 
-      border-radius: 6px; 
+      margin-top:12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border-radius: 6px;
       overflow: hidden;
       font-size: clamp(0.75rem, 2.5vw, 0.85rem);
       min-width: 500px;
     }
-    
+
     th,td{
       padding:6px 8px;
       border-bottom:1px solid #1a2b3a;
@@ -487,51 +392,21 @@
       font-family:monospace;
       white-space: nowrap;
     }
-    
+
     th{
       background:linear-gradient(to bottom, #071826, #0a1f33);
-      color:#9fc7ff; 
+      color:#9fc7ff;
       font-weight: 700;
     }
-    
-    .meta{
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-      color:#9fb0c8;
-      margin-bottom:8px;
-    }
-    
-    .footer{
-      margin-top:10px;
-      color:#9fb0c8;
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-    }
-    
-    .small{
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-      color:#9fb0c8;
-    }
-    
-    .badge{
-      display:inline-block;
-      padding:4px 8px;
-      border-radius:6px;
-      background:linear-gradient(to bottom, #0b2b3a, #0d3245);
-      color:#bfe8ff;
-      margin-left:4px;
-      font-weight: 600;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-      font-size: clamp(0.75rem, 2.5vw, 0.85rem);
-    }
-    
-    .wrap-single{
-      display:flex;
-      gap: 6px;
-      flex-wrap:wrap; 
-      margin-top: 8px;
-    }
-    
+
+    .meta{ font-size: clamp(0.8rem, 3vw, 0.9rem); color:#9fb0c8; margin-bottom:8px; }
+    .footer{ margin-top:10px; color:#9fb0c8; font-size: clamp(0.8rem, 3vw, 0.9rem); }
+    .small{ font-size: clamp(0.8rem, 3vw, 0.9rem); color:#9fb0c8; }
+    .badge{ display:inline-block; padding:4px 8px; border-radius:6px; background:linear-gradient(to bottom, #0b2b3a, #0d3245); color:#bfe8ff; margin-left:4px; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.2); font-size: clamp(0.75rem, 2.5vw, 0.85rem); }
+
+    .wrap-single{ display:flex; gap: 6px; flex-wrap:wrap; margin-top: 8px; }
     input[type=file]{display:none}
-    
+
     .toast{
       position:fixed;
       bottom:20px;
@@ -542,333 +417,101 @@
       padding:12px 16px;
       border-radius:8px;
       opacity:0;
-      transition:all 0.3s ease; /* Faster transition */
+      transition:all 0.3s ease;
       z-index: 1000;
-      box-shadow: 0 4px 15px rgba(31, 111, 235, 0.3); /* Reduced shadow */
+      box-shadow: 0 4px 15px rgba(31, 111, 235, 0.3);
       font-weight: 600;
       text-align: center;
       max-width: 300px;
       margin: 0 auto;
-      /* Prevent toast from causing layout shifts */
       contain: layout style paint;
     }
-    
-    .toast.show{
-      opacity:1; 
-      transform: translateY(-5px); /* Reduced transform */
-    }
-    
-    .visual-comparison {
-      margin-bottom: 16px;
-      border: 1px solid #23313f;
-      border-radius: 8px;
-      padding: 10px;
-      background: #071027;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-    .question-mark {
-      background: #ffeb3b;
-      color: #333;
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-weight: bold;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-    }
-    
-    /* Advanced Hex Converter Styles - Mobile Optimized */
+
+    .toast.show{ opacity:1; transform: translateY(-5px); }
+
+    .visual-comparison { margin-bottom: 16px; border: 1px solid #23313f; border-radius: 8px; padding: 10px; background: #071027; box-shadow: 0 2px 10px rgba(0,0,0,0.15); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .question-mark { background: #ffeb3b; color: #333; padding: 2px 4px; border-radius: 3px; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+
     .hex-converter-card {
       max-width: 100%;
       margin: 0 auto;
       background: rgba(255,255,255,0.05);
       border-radius: 10px;
-      padding: 16px; /* Reduced padding */
-      box-shadow: 0 4px 20px rgba(2,6,23,0.6); /* Reduced shadow */
-      backdrop-filter: blur(10px); /* Reduced blur */
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(2,6,23,0.6);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.08);
       position: relative;
       overflow: hidden;
     }
-    
+
     @media (min-width: 768px) {
-      .hex-converter-card {
-        max-width: 560px;
-        padding: 20px;
-      }
+      .hex-converter-card { max-width: 560px; padding: 20px; }
     }
-    
+
     .hex-converter-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 3px;
       background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff);
       background-size: 300% 100%;
-      animation: rgb-shift 6s ease infinite; /* Slower animation */
+      animation: rgb-shift 6s ease infinite;
     }
-    
+
     .hex-converter-card::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(135deg, rgba(255,0,85,0.05), rgba(0,170,255,0.05), rgba(0,255,136,0.05));
       z-index: -1;
       opacity: 0.7;
     }
-    
-    .hex-converter-card h1 {
-      font-size: clamp(1.2rem, 4vw, 1.5rem);
-      margin: 0 0 10px;
-    }
-    
-    .hex-converter-card .subtitle {
-      margin: 0 0 15px;
-      color: #c9e0ffcc;
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-      line-height: 1.5;
-    }
-    
-    .row{
-      display:flex;
-      flex-direction: column;
-      gap: 8px; /* Reduced gap */
-      align-items: stretch;
-    }
-    
+
+    .hex-converter-card h1 { font-size: clamp(1.2rem, 4vw, 1.5rem); margin: 0 0 10px; }
+    .hex-converter-card .subtitle { margin: 0 0 15px; color: #c9e0ffcc; font-size: clamp(0.8rem, 3vw, 0.9rem); line-height: 1.5; }
+
+    .row{ display:flex; flex-direction: column; gap: 8px; align-items: stretch; }
     @media (min-width: 480px) {
-      .row {
-        flex-direction: row;
-        align-items: center;
-      }
+      .row { flex-direction: row; align-items: center; }
     }
-    
-    input[type=text]{
-      flex:1;
-      padding:12px 14px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.05);
-      color:inherit;
-      font-size: clamp(0.9rem, 3vw, 1rem);
-      transition: all 0.3s ease; /* Faster transition */
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-    
-    input[type=text]:focus {
-      border-color: #1f6feb;
-      box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.2), 0 4px 12px rgba(31, 111, 235, 0.15);
-      transform: translateY(-1px); /* Reduced transform */
-    }
-    
-    .convert-btn{
-      padding:12px 16px;
-      border-radius:8px;
-      border:0;
-      background:linear-gradient(135deg, #0ea5a4, #0d9488);
-      color:#fff;
-      cursor:pointer;
-      font-weight:600;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 10px rgba(14, 165, 164, 0.3); /* Reduced shadow */
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-      justify-content: center;
-      /* Improve touch targets */
-      min-height: 44px;
-    }
-    
-    .convert-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055);
-      background-size: 400% 400%;
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.3s; /* Faster transition */
-    }
-    
-    .convert-btn:hover::before,
-    .convert-btn:active::before {
-      opacity: 1;
-      animation: rgb-flow 4s linear infinite; /* Slower animation */
-    }
-    
-    .convert-btn:hover,
-    .convert-btn:active {
-      transform: translateY(-2px); /* Reduced transform */
-      box-shadow: 0 4px 15px rgba(14, 165, 164, 0.4); /* Reduced shadow */
-    }
-    
+
+    input[type=text]{ flex:1; padding:12px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.05); color:inherit; font-size: clamp(0.9rem, 3vw, 1rem); transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    input[type=text]:focus { border-color: #1f6feb; box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.2), 0 4px 12px rgba(31, 111, 235, 0.15); transform: translateY(-1px); }
+
+    .convert-btn{ padding:12px 16px; border-radius:8px; border:0; background:linear-gradient(135deg, #0ea5a4, #0d9488); color:#fff; cursor:pointer; font-weight:600; position: relative; overflow: hidden; z-index: 1; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 10px rgba(14, 165, 164, 0.3); font-size: clamp(0.8rem, 3vw, 0.9rem); justify-content: center; min-height: 44px; }
+    .convert-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055); background-size: 400% 400%; z-index: -1; opacity: 0; transition: opacity 0.3s; }
+    .convert-btn:hover::before, .convert-btn:active::before { opacity: 1; animation: rgb-flow 4s linear infinite; }
+    .convert-btn:hover, .convert-btn:active { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(14, 165, 164, 0.4); }
     .convert-btn:active{transform:translateY(0)}
-    
-    .converter-result{
-      margin-top:12px;
-      padding:12px;
-      border-radius:8px;
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.06);
-      transition: all 0.3s ease; /* Faster transition */
-      font-size: clamp(0.9rem, 3vw, 1rem);
-      font-weight: 600;
-      min-height: 24px;
-      word-break: break-all;
-    }
-    
-    .converter-result:hover {
-      border-color: rgba(255,255,255,0.12);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      transform: translateY(-1px); /* Reduced transform */
-    }
-    
-    .muted{
-      color:#9fb6d9;
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-    }
-    
-    .error{
-      color:#ffd2d2;
-      background:linear-gradient(135deg, rgba(255,0,0,0.1), rgba(255,100,100,0.1));
-      padding:10px;
-      border-radius:8px;
-      margin-top:8px;
-      border: 1px solid rgba(255,100,100,0.3);
-      box-shadow: 0 2px 8px rgba(255,0,0,0.1);
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-    }
-    
-    .copy-btn{
-      margin-left:6px;
-      padding:10px 12px;
-      border-radius:8px;
-      border:0;
-      background:linear-gradient(135deg, #64748b, #475569);
-      color:#fff;
-      cursor:pointer;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3); /* Reduced shadow */
-      font-size: clamp(0.8rem, 3vw, 0.9rem);
-      /* Improve touch targets */
-      min-height: 44px;
-    }
-    
-    .copy-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055);
-      background-size: 400% 400%;
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.3s; /* Faster transition */
-    }
-    
-    .copy-btn:hover::before,
-    .copy-btn:active::before {
-      opacity: 1;
-      animation: rgb-flow 4s linear infinite; /* Slower animation */
-    }
-    
-    .copy-btn:hover,
-    .copy-btn:active {
-      transform: translateY(-2px); /* Reduced transform */
-      box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4); /* Reduced shadow */
-    }
-    
-    /* Advanced Card Design - Mobile Optimized */
-    .enhanced-card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      padding: 16px; /* Reduced padding */
-      box-shadow: 0 4px 20px rgba(2,6,23,0.6); /* Reduced shadow */
-      backdrop-filter: blur(10px); /* Reduced blur */
-      border: 1px solid rgba(255,255,255,0.08);
-      margin-bottom: 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    @media (min-width: 768px) {
-      .enhanced-card {
-        padding: 20px;
-        border-radius: 14px;
-      }
-    }
-    
-    .enhanced-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff);
-      background-size: 300% 100%;
-      animation: rgb-shift 6s ease infinite; /* Slower animation */
-    }
-    
-    .enhanced-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(255,0,85,0.05), rgba(0,170,255,0.05), rgba(0,255,136,0.05));
-      z-index: -1;
-      opacity: 0.7;
-    }
-    
-    /* Mobile-specific optimizations */
+
+    .converter-result{ margin-top:12px; padding:12px; border-radius:8px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); transition: all 0.3s ease; font-size: clamp(0.9rem, 3vw, 1rem); font-weight: 600; min-height: 24px; word-break: break-all; }
+    .converter-result:hover { border-color: rgba(255,255,255,0.12); box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: translateY(-1px); }
+    .muted{ color:#9fb6d9; font-size: clamp(0.8rem, 3vw, 0.9rem); }
+    .error{ color:#ffd2d2; background:linear-gradient(135deg, rgba(255,0,0,0.1), rgba(255,100,100,0.1)); padding:10px; border-radius:8px; margin-top:8px; border: 1px solid rgba(255,100,100,0.3); box-shadow: 0 2px 8px rgba(255,0,0,0.1); font-size: clamp(0.8rem, 3vw, 0.9rem); }
+
+    .copy-btn{ margin-left:6px; padding:10px 12px; border-radius:8px; border:0; background:linear-gradient(135deg, #64748b, #475569); color:#fff; cursor:pointer; position: relative; overflow: hidden; z-index: 1; display: flex; align-items: center; gap: 6px; font-weight: 600; box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3); font-size: clamp(0.8rem, 3vw, 0.9rem); min-height: 44px; }
+    .copy-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff, #ff0055); background-size: 400% 400%; z-index: -1; opacity: 0; transition: opacity 0.3s; }
+    .copy-btn:hover::before, .copy-btn:active::before { opacity: 1; animation: rgb-flow 4s linear infinite; }
+    .copy-btn:hover, .copy-btn:active { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4); }
+
+    .enhanced-card { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 16px; box-shadow: 0 4px 20px rgba(2,6,23,0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; position: relative; overflow: hidden; }
+    @media (min-width: 768px) { .enhanced-card { padding: 20px; border-radius: 14px; } }
+    .enhanced-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #ff0055, #ffaa00, #00ff88, #00aaff); background-size: 300% 100%; animation: rgb-shift 6s ease infinite; }
+    .enhanced-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,0,85,0.05), rgba(0,170,255,0.05), rgba(0,255,136,0.05)); z-index: -1; opacity: 0.7; }
+
     @media (max-width: 767px) {
-      /* Reduce animations further on mobile */
-      .rgb-circle {
-        animation-duration: 40s;
-      }
-      
-      /* Improve scrolling performance */
-      body {
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      /* Prevent text selection on interactive elements */
-      button, .tab {
-        -webkit-tap-highlight-color: transparent;
-        user-select: none;
-      }
-      
-      /* Optimize images and background rendering */
-      * {
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-      }
+      .rgb-circle { animation-duration: 40s; }
+      body { -webkit-overflow-scrolling: touch; }
+      button, .tab { -webkit-tap-highlight-color: transparent; user-select: none; }
+      * { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
     }
   </style>
 </head>
 <body>
+  <!-- Fireworks canvas (merged) -->
+  <canvas id="fireworksCanvas"></canvas>
+
   <!-- Particle Background -->
   <div id="particles-js"></div>
 
@@ -959,7 +602,8 @@
   <div id="toast" class="toast">Copied!</div>
 
 <script>
-// Debounce function to limit how often a function can be called
+/* --- YOUR ORIGINAL SCRIPTS (unchanged logic) --- */
+/* Debounce function to limit how often a function can be called */
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -979,40 +623,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
     script.onload = function() {
-      particlesJS("particles-js", {
-        particles: {
-          number: { value: 40, density: { enable: true, value_area: 400 } }, // Reduced particles
-          color: { value: "#ffffff" },
-          shape: { type: "circle" },
-          opacity: { value: 0.2, random: true }, // Reduced opacity
-          size: { value: 2, random: true }, // Smaller size
-          line_linked: {
-            enable: false, // Disable lines on mobile
-            distance: 150,
-            color: "#1f6feb",
-            opacity: 0.1,
-            width: 1
+      if (window.particlesJS) {
+        particlesJS("particles-js", {
+          particles: {
+            number: { value: 40, density: { enable: true, value_area: 400 } },
+            color: { value: "#ffffff" },
+            shape: { type: "circle" },
+            opacity: { value: 0.2, random: true },
+            size: { value: 2, random: true },
+            line_linked: { enable: false, distance: 150, color: "#1f6feb", opacity: 0.1, width: 1 },
+            move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
           },
-          move: {
-            enable: true,
-            speed: 1, // Slower movement
-            direction: "none",
-            random: true,
-            straight: false,
-            out_mode: "out",
-            bounce: false
-          }
-        },
-        interactivity: {
-          detect_on: "canvas",
-          events: {
-            onhover: { enable: false }, // Disable hover on mobile
-            onclick: { enable: false }, // Disable click on mobile
-            resize: true
-          }
-        },
-        retina_detect: true
-      });
+          interactivity: { detect_on: "canvas", events: { onhover: { enable: false }, onclick: { enable: false }, resize: true } },
+          retina_detect: true
+        });
+      }
     };
     document.head.appendChild(script);
   }
@@ -1021,19 +646,19 @@ document.addEventListener('DOMContentLoaded', function() {
 // Tab Navigation
 document.addEventListener('DOMContentLoaded', function() {
   const tabs = document.querySelectorAll('.tab');
-  
+
   tabs.forEach(tab => {
     tab.addEventListener('click', function() {
       const toolId = this.getAttribute('data-tool');
-      
+
       // Hide all tools
       document.querySelectorAll('.tool-container').forEach(tool => {
         tool.classList.remove('active');
       });
-      
+
       // Show selected tool
       document.getElementById(toolId).classList.add('active');
-      
+
       // Update tabs
       document.querySelectorAll('.tab').forEach(t => {
         t.classList.remove('active');
@@ -1048,7 +673,9 @@ document.getElementById('help-btn').addEventListener('click', function() {
   alert(' [Pmm Corporation Byte Checker] ব্যবহারের ক্ষেত্রে প্রথম বক্সে সার্চ প্যাটার্ন দিন, তারপরের বক্সে রিপ্লেস প্যাটার্ন দিন, এবার কম্পেয়ার বাটনে চাপুন , তাহলে নিচে দেখতে পাবেন দুইটি কোড এর মধ্যে ঠিক কোন জায়গায় পরিবর্তন হয়েছে ।  [Hex Converter] ব্যবহারের ক্ষেত্রে হেক্স অবসেট দিলে ডেসিমেল সংখ্যা পাবেন আর ডেসিমেল সংখ্যা দিলে  হেক্স অবসেট পাবেন                                                                                                                                   In case of using [Pmm Corporation Byte Checker] enter the search pattern in the first box, enter the replace pattern in the second box, now press the compare button, then you will see below where exactly the change has been made in the two codes. In case of using [Hex Converter], if you give the hex offset, you will get the decimal number and if you give the decimal number, you will get the hex offset.');
 });
 
-// Byte Diff Viewer Functions
+/* --- Byte diff and hex converter logic (copied from your original code) --- */
+/* (For brevity in this reply the functions below are the same as your original ones) */
+
 function normalizeHex(s){
   if(!s) return '';
   return s.replace(/0x/gi,'')
@@ -1089,12 +716,12 @@ function markChangesWithQuestionMarks(leftBytes, rightBytes, originalRightText) 
   const maxLen = Math.max(leftBytes.length, rightBytes.length);
   let result = '';
   const originalHexArray = originalRightText.split(' ').filter(x => x.trim() !== '');
-  
+
   for(let i = 0; i < maxLen; i++) {
     const leftByte = i < leftBytes.length ? leftBytes[i] : null;
     const rightByte = i < rightBytes.length ? rightBytes[i] : null;
     const originalHex = i < originalHexArray.length ? originalHexArray[i] : '';
-    
+
     if (leftByte === null && rightByte !== null) {
       result += '?? ';
     } else if (leftByte !== null && rightByte === null) {
@@ -1135,7 +762,7 @@ function renderDiff(leftBytes,rightBytes){
   const visualContainer = document.createElement('div');
   visualContainer.className = 'hex-line';
   visualContainer.style.marginTop = '12px';
-  
+
   let leftLine='',rightLine='';
   for(let i=0;i<rows.length;i++){
     const r=rows[i];
@@ -1144,15 +771,15 @@ function renderDiff(leftBytes,rightBytes){
     else if(r.status==='added'){leftLine+="<span class='same'>--</span> ";rightLine+=`<span class='added'>${toHex(r.new)}</span> `;}
     else if(r.status==='removed'){leftLine+=`<span class='removed'>${toHex(r.orig)}</span> `;rightLine+="<span class='same'>--</span> ";}
   }
-  
+
   const preLeft=document.createElement('div');
   preLeft.innerHTML='<strong>Original (left)</strong><br/>'+leftLine;
   preLeft.style.marginTop='8px';
-  
+
   const preRight=document.createElement('div');
   preRight.innerHTML='<strong>New (right)</strong><br/>'+rightLine;
   preRight.style.marginTop='6px';
-  
+
   visualContainer.appendChild(preLeft);
   visualContainer.appendChild(preRight);
 
@@ -1193,13 +820,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const visualRes = document.getElementById('visual-result');
   let lastRows=[];
 
-  // Debounced update counts to prevent excessive calculations
   const debouncedUpdateCounts = debounce(function() {
     const l=parseBytes(leftTA.value).length;
     const r=parseBytes(rightTA.value).length;
     countLeft.textContent=l;countRight.textContent=r;
   }, 150);
-  
+
   if (leftTA && rightTA) {
     leftTA.addEventListener('input', debouncedUpdateCounts);
     rightTA.addEventListener('input', debouncedUpdateCounts);
@@ -1224,12 +850,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const originalRightText = rightTA.value;
       const left=parseBytes(leftTA.value);
       const right=parseBytes(rightTA.value);
-      
+
       if(left.length === 0 && right.length === 0) {
         alert('প্রথমে দুটি বক্সে হেক্স ভ্যালু দিন।');
         return;
       }
-      
+
       const markedResult = markChangesWithQuestionMarks(left, right, originalRightText);
       rightTA.value = markedResult;
       showToast('Changes marked with ??');
@@ -1242,9 +868,7 @@ document.addEventListener('DOMContentLoaded', function() {
     t.classList.add('show');
     setTimeout(()=>{
       t.classList.remove('show');
-      setTimeout(()=>{
-        t.style.display = 'none';
-      }, 300);
+      setTimeout(()=>{ t.style.display = 'none'; }, 300);
     }, 1500);
   }
 
@@ -1280,7 +904,7 @@ document.addEventListener('DOMContentLoaded', function() {
       r.readAsText(f);
     });
   }
-  
+
   if (document.getElementById('loadLeft') && document.getElementById('fileLeft')) {
     wireFile('loadLeft','fileLeft',leftTA);
   }
@@ -1322,17 +946,17 @@ document.addEventListener('DOMContentLoaded', function() {
   const hexErrorBox = document.getElementById('hexError');
   const copyHexBtn = document.getElementById('copyHexResult');
 
-  function showHexError(msg){ 
+  function showHexError(msg){
     if (hexErrorBox) {
-      hexErrorBox.style.display = 'block'; 
-      hexErrorBox.textContent = msg; 
+      hexErrorBox.style.display = 'block';
+      hexErrorBox.textContent = msg;
     }
   }
-  
-  function clearHexError(){ 
+
+  function clearHexError(){
     if (hexErrorBox) {
-      hexErrorBox.style.display = 'none'; 
-      hexErrorBox.textContent = ''; 
+      hexErrorBox.style.display = 'none';
+      hexErrorBox.textContent = '';
     }
   }
 
@@ -1345,10 +969,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function convertHex(){
     clearHexError();
     const raw = hexInput.value.trim();
-    if(raw === ''){ 
-      if (hexResult) hexResult.textContent = 'কিছুই লেখা নেই — ইনপুট দিন।'; 
-      return; 
-    }
+    if(raw === ''){ if (hexResult) hexResult.textContent = 'কিছুই লেখা নেই — ইনপুট দিন।'; return; }
 
     const hexMatch = raw.match(/^(-?)0[xX]([0-9a-fA-F]+)$/);
     if(hexMatch){
@@ -1375,23 +996,11 @@ document.addEventListener('DOMContentLoaded', function() {
     showHexError('অবৈধ ইনপুট — ইনপুট উচিত: 0xA2 (hex) বা 162 (decimal)');
   }
 
-  if (convertBtn) {
-    convertBtn.addEventListener('click', convertHex);
-  }
-  
-  if (hexInput) {
-    hexInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') convertHex(); });
-  }
-  
+  if (convertBtn) { convertBtn.addEventListener('click', convertHex); }
+  if (hexInput) { hexInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') convertHex(); }); }
   if (clearHexBtn) {
-    clearHexBtn.addEventListener('click', ()=>{ 
-      if (hexInput) hexInput.value = ''; 
-      if (hexResult) hexResult.textContent = 'রেজাল্ট এখানে দেখাবে।'; 
-      clearHexError(); 
-      if (hexInput) hexInput.focus(); 
-    });
+    clearHexBtn.addEventListener('click', ()=>{ if (hexInput) hexInput.value = ''; if (hexResult) hexResult.textContent = 'রেজাল্ট এখানে দেখাবে।'; clearHexError(); if (hexInput) hexInput.focus(); });
   }
-
   if (copyHexBtn) {
     copyHexBtn.addEventListener('click', async ()=>{
       const txt = hexResult ? hexResult.textContent || '' : '';
@@ -1403,6 +1012,173 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+/* --- FIREWORKS SCRIPT (integrated) --- */
+/* The fireworks canvas sits behind the UI. Pointer events are disabled by default so UI remains interactive.
+   If you'd like to let clicks on the page create fireworks on all clicks, set canvas.style.pointerEvents = 'auto'
+   (but UI buttons may then be blocked by the canvas; alternatively listen on document and compute coordinates). */
+
+(function() {
+  // Wait until page load to ensure canvas present
+  function initFireworks() {
+    const canvas = document.getElementById('fireworksCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // Make sure canvas fills the screen's CSS pixels
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', debounce(resize, 120));
+
+    // Arrays for fireworks and explosion particles
+    let shells = [];
+    let particles = [];
+
+    // Config
+    const gravity = 0.05;
+    const autoLaunchProbability = 0.03;
+    const shellSpeed = 12;
+    const particleCount = 120;
+    const particleFriction = 0.97;
+    const particleGravity = 0.08;
+    const trailEffect = 0.15;
+
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function randomColor() { return `hsl(${Math.random() * 360}, 100%, 50%)`; }
+
+    class Shell {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color || randomColor();
+        this.velocity = { x: random(-2, 2), y: random(-shellSpeed, -shellSpeed + 2) };
+        this.size = 2.5;
+        this.hasExploded = false;
+        this.apex = random(window.innerHeight * 0.1, window.innerHeight * 0.4);
+      }
+      update(i) {
+        this.velocity.y += gravity;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        if (this.y <= this.apex && !this.hasExploded) {
+          this.explode();
+          this.hasExploded = true;
+          shells.splice(i, 1);
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      explode() {
+        for (let i = 0; i < particleCount; i++) particles.push(new ExplosionParticle(this.x, this.y, this.color));
+      }
+    }
+
+    class ExplosionParticle {
+      constructor(x, y, color) {
+        this.x = x; this.y = y;
+        const hueMatch = color.match(/hsl\((\d+)/);
+        const baseHue = hueMatch ? parseInt(hueMatch[1]) : Math.floor(Math.random()*360);
+        const hue = random(baseHue - 15, baseHue + 15);
+        this.color = `hsl(${hue}, 100%, ${random(50,70)}%)`;
+        const angle = random(0, Math.PI * 2);
+        const speed = random(1, 8);
+        this.velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+        this.size = random(1, 3);
+        this.alpha = 1;
+      }
+      update(i) {
+        this.velocity.x *= particleFriction;
+        this.velocity.y *= particleFriction;
+        this.velocity.y += particleGravity;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.alpha -= 0.015;
+        if (this.alpha <= 0) particles.splice(i, 1);
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      // Clear with slight opacity to create trails
+      ctx.fillStyle = `rgba(0, 0, 10, ${trailEffect})`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < autoLaunchProbability) {
+        const x = random(window.innerWidth * 0.2, window.innerWidth * 0.8);
+        shells.push(new Shell(x, window.innerHeight, null));
+      }
+
+      for (let i = shells.length - 1; i >= 0; i--) {
+        shells[i].draw();
+        shells[i].update(i);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].draw();
+        particles[i].update(i);
+      }
+    }
+
+    // Let clicks/taps create fireworks, but avoid blocking UI:
+    // We'll listen on the document, detect clicks that are NOT on interactive elements (buttons, inputs, textareas),
+    // and launch fireworks there.
+    function isInteractiveTarget(el) {
+      if (!el) return false;
+      const tag = el.tagName ? el.tagName.toLowerCase() : '';
+      if (['button','input','textarea','select','label'].includes(tag)) return true;
+      if (el.classList && (el.classList.contains('tab') || el.classList.contains('help-btn') || el.classList.contains('convert-btn') || el.classList.contains('copy-btn'))) return true;
+      return el.closest && el.closest('button, input, textarea, select, label, .tab, .help-btn, .convert-btn, .copy-btn');
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (isInteractiveTarget(target)) return; // don't create fireworks if click on UI controls
+      // compute coordinates relative to viewport
+      const x = e.clientX || (e.touches && e.touches[0] && e.touches[0].clientX) || window.innerWidth/2;
+      shells.push(new Shell(x, window.innerHeight, null));
+    }, { passive: true });
+
+    // support touchstart similarly
+    document.addEventListener('touchstart', (e) => {
+      if (!e) return;
+      const target = e.target;
+      if (isInteractiveTarget(target)) return;
+      const touch = e.touches && e.touches[0];
+      if (!touch) return;
+      shells.push(new Shell(touch.clientX, window.innerHeight, null));
+    }, { passive: true });
+
+    // Fade instructions if present (you have none specific to fireworks text; if you add, similar logic applies)
+    animate();
+  }
+
+  // initialize after slight delay to ensure DOM ready
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(initFireworks, 120);
+  } else {
+    window.addEventListener('DOMContentLoaded', () => setTimeout(initFireworks, 120));
+  }
+})();
 </script>
 </body>
 </html>
